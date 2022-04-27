@@ -141,8 +141,7 @@ class Figure(Object):
         self.rotate(angle)
 
     def move(self, point):
-        for point in self.points: point +=  Vector(point) - self.center
-        self.center = point
+        pass
 
     def shift_to_vector(self, vector):
         self.center += Vector(vector)
