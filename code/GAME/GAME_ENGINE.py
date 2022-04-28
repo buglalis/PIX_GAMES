@@ -48,7 +48,16 @@ class Vector:
         self.rotate(angle - self.angle)
 
     def distance(self, vec):
-        return ((self.x -vec.x)**2 + (self.y -vec.y)**2)**(0.5)
+        return ((self.x - vec.x)**2 + (self.y - vec.y)**2)**(0.5)
+
+    def distance_to_line(self, A, B):
+        C = (A.x* (B.y - A.y) + A.y*(B.x - A.x))
+        vec = Vector([B.x - A.x, B.y - A.y])
+        # vec = B - A
+        vec = vec.normal()
+        if vec.len()!= 0:
+            return abs((A.y - B.y) * self.x + (B.x - A.x) * self.y + C )/vec.len()
+        return -1
 
     def len(self):
         return (self.x**2 + self.y**2)**(0.5)
@@ -66,25 +75,36 @@ class Vector:
         return Vector([self.y, -self.x])
 
     def reverse(self):
-        self = self.scale(-1)
+        return self.scale(-1)
 
     def reb(self):
         self.y = -1
 
     def rebound(self, vec):
         if self.scalar(vec) != 0:
-            # p = vec.scale( vec.scalar(self)/(vec.len()**2))
-            # n = self - p
-            # self -= n.scale(2)
-            # self += Vector( [0.1, -0.1])
-
-            #################################
             p = vec.scale( vec.scalar(self)/(vec.len()**2))
             n = Vector([self.x - p.x, self.y - p.y])
-            # t = Vector([n.x*2, n.y*2])
             self -= n.scale(2)
         else:
-            self.reverse()
+            self = self.reverse()
+
+class Rectangle:
+    def __init__(self, A, B, C, D):
+        self.A = A
+        self.B = B
+        self.C = C
+        self.D = D
+
+    def inside(self, point):
+        i = A - D
+        j = A - D
+        j = j.normal().reverse()
+        A = np.array([[i.x, j.x],
+                      [i.y, j.y],
+                      [D.x, D.y]])
+        X = np.array()
+
+
 
 class Object(pygame.sprite.Sprite):
     def __init__(self, filename):
@@ -104,8 +124,8 @@ class Figure(Object):
         self.accel   = Vector( (ax, ay))
         self.ang_vel = angular_velocity
         self.draw_point = Vector(draw_point)
-        if self.points != None:
-             self.effective_diameter = max([self.center.distance(x) for x in self.points])
+        # if self.points != None:
+        #      self.effective_diameter = max([self.center.distance(x) for x in self.points])
 
     def rotate(self, angle):
         angle = ((angle/360) * np.pi/2)
@@ -154,8 +174,14 @@ class Figure(Object):
 
     def draw(self, screen, point, angle):
         rotate_image = pygame.transform.rotate(self.image, self.angle )
-        rotate_image.set_colorkey((255, 255, 255))
+        # rotate_image.set_colorkey((255, 255, 255))
         screen.blit(rotate_image, (point[0] - int(rotate_image.get_width() / 2), point[1] - int(rotate_image.get_height() / 2)))
+
+    def perimeter(self):
+        L = 0
+        for i in range(-1, len(self.points)-1):
+            L += Vector([self.points[i].x - self.points[i+1].x, self.points[i].y - self.points[i+1].y]).len()
+        return L
 
 
     class Player:
@@ -177,8 +203,11 @@ class Rect(Figure):
         super().__init__(point, self.set_rect_points(point, filename), filename, vx = vx, vy = vy, ax = ax, ay = ay, angle = angle, angular_velocity = angular_velocity)
         self.rotate(angle*4)
         # self.rotate(angle)
+        self.set_radius(filename)
 
-
+    def set_radius(self, filename):
+        w, h = list(image_size(filename))
+        self.effective_diameter = ((w/2)**2 + (h/2)**2)**(0.5)
 
     def set_rect_points(self, center, filename):
         cx, cy = center
@@ -197,7 +226,7 @@ class Rect(Figure):
     def draw(self, screen):
         super().draw(screen, self.get_draw_point(), self.angle)
         pygame.draw.aalines(screen, (255,255,255), True,  [x.get_pos() for x in self.points])
-        # pygame.draw.circle(screen, (255,255,255), (self.center.get_pos()), 5)
+        pygame.draw.circle(screen, (255,255,255), (self.center.get_pos()), 5)
 
 
 

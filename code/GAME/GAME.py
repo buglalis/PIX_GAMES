@@ -12,13 +12,15 @@ class Game:
         self.width   = width
         self.height  = height
         # /////////////////////////////// #
+
         self.tools = PG_tools()
+
         self.UI_pg = UI_Pygame(width, height, FPS)
         self.engine = engine
 
     def start(self):
-        self.tools.set_caption(self.name)
-        self.tools.start()
+        self.UI_pg.set_caption(self.name)
+        self.UI_pg.start()
 
         while self.running:
             self.game_cycle()
@@ -26,12 +28,12 @@ class Game:
             self.UI_pg.tick()
             self.events()
             self.tests()
-            # self.tools.key_events()
+            # self.UI_pg.key_events()
 
 
     def events(self, *args):
-        for event in self.tools.get_events():
-            if event.type == self.tools.EVENTS.QUIT.value:
+        for event in self.UI_pg.get_events():
+            if event.type == self.UI_pg.EVENTS.QUIT.value:
                 self.running = False
             for fnk in args:
                 fnk()

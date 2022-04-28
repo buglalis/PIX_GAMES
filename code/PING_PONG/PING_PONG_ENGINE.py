@@ -17,42 +17,83 @@ class Ping_Pong_engine(Game_engine):
         for ball in self.balls:
             # self.collisin_test(ball)
             for wall in self.walls:
-                self.collision(ball, wall)
+                self.collision_0(ball, wall)
 
         for obj in (self.walls + self.balls):
             obj.update()
 
         return self.walls + self.balls
 
-    def collision(self, ball, wall):
+    def collision_0(self, ball, wall):
         if ball.center.distance(wall.center) > ball.radius + wall.effective_diameter: return                                        # Проверка на возможность столкновения
         for i in range(-1, 3):                                                                                                      # Проход по всем точка стены
             vec = Vector([wall.points[i].x - wall.points[i+1].x, wall.points[i].y - wall.points[i+1].y])                            # Направляющий вектор прямой
-            b = (wall.points[i].x* (wall.points[i+1].y - wall.points[i].y) - wall.points[i].y*(wall.points[i+1].x - wall.points[i].x))
+            C = (wall.points[i].x* (wall.points[i+1].y - wall.points[i].y) - wall.points[i].y*(wall.points[i+1].x - wall.points[i].x))
 
-            if (abs(vec.y * ball.center.x - vec.x * ball.center.y + b )/vec.len() <= ball.radius):
+            if (abs(vec.y * ball.center.x - vec.x * ball.center.y + C )/vec.len() <= ball.radius):
 
-                nA = Vector([vec.y,-vec.x]).scale( abs(vec.y * ball.center.x - vec.x * ball.center.y + b )/vec.len()**2)
+                nA = Vector([vec.y,-vec.x]).scale( abs(vec.y * ball.center.x - vec.x * ball.center.y + C )/vec.len()**2)
                 V = nA + ball.center
 
                 if (wall.points[i].x <= V.x <= wall.points[i+1].x) or (wall.points[i].y <= V.y < wall.points[i+1].y):
                     ball.speed.rebound(vec)
+                    return
 
-                # if (wall.points[i].x <= ball.center.x <= wall.points[i+1].x) or (wall.points[i].y <= ball.center.y <= wall.points[i+1].y):
-                #     ball.speed.rebound(vec)
+    def collision_1(self, obj_1, obj_2):
+        if (type(obj_1) is Ball) and (type(obj_2) is Ball):
+            self.balls_collision(obj_1, obj_2)
+        elif (type(obj_1) is Rect_Wall) and (type(obj_2) is Rect_Wall):
+            self.walls_collision(obj_1, obj_2)
+        elif (type(obj_1) is Ball) and (type(obj_2) is Rect_Wall):
+            self.ball_wall_collision_distance(obj_1, obj_2)
+
+    def balls_collision(self, ball_1, ball_2):
+        if ball_1.center.distance(ball_2.center) > ball_1.radius + ball_2.radius: return
+
+    def walls_collision(self, wall_1, wall_2):
+        if wall_1.center.distance(wall_2.center) > wall_1.effective_diameter + wall_2.effective_diameter: return
+
+    def ball_wall_collision_distance(self, ball, wall):
+        # ball.speed = Vector([0,0])
+        # print(ball.center.distance_to_line(Vector([0,0]),Vector([1,1])),  ball.center.y)#(ball.center.x**2 + ball.center.y**2)**(0.5) )
+        if ball.center.distance(wall.center) > ball.radius + wall.effective_diameter: return
+        dist = float('inf')
+        L = 0
+        for i in range(-1, len(wall.points)-1):
+                dist = ball.center.distance_to_line(wall.points[i+1], wall.points[i])
+                print(dist)
+                L += dist
+                vec = Vector([wall.points[i+1].x - wall.points[i].x, wall.points[i+1].y - wall.points[i].y])
+        # print(L)
+        if (int(L) <= wall.perimeter()):
+            dist = float('inf')
+            for i in range(-1, len(wall.points)-1):
+                if ball.center.distance_to_line(wall.points[i], wall.points[i+1]) < dist:
+                    vec = Vector([wall.points[i+1].x - wall.points[i].x, wall.points[i+1].y - wall.points[i].y])
+                    dist = ball.center.distance_to_line(wall.points[i+1], wall.points[i])
+            ball.speed.rebound(vec)
+        ball.speed.rebound(vec)
+
+
+    def ball_wall_collision_radius(self, ball, wall):
+        pass
+
+
+
+
 
 
     # ▀█▀ █▀▀ █▀ ▀█▀ █▀
     # ░█░ ██▄ ▄█ ░█░ ▄█
 
     def TEST(self):
-        self.test_2()
+        self.test_1()
 
     def test_1(self):
         self.clear()
         self.add(self.walls,
-                 Rect_Wall( [200, 230], "images/walls/wall_test.png", angular_velocity = 0.1, angle = 45),
-                 Rect_Wall( [450, 500], "images/walls/Sergi.jpg", angular_velocity = 2, angle = 45, vx = 0.2, vy = -0.4),
+                 Rect_Wall( [200, 230], "images/walls/wall_test.png", angular_velocity = 0.1, angle = 45, vx = -1),
+                 Rect_Wall( [450, 500], "images/walls/Sergi.jpg", angular_velocity = 2, angle = 45),
 
 
                  Rect_Wall( [500, 5], "images/walls/wall_w.png", angle = 0),
@@ -68,7 +109,7 @@ class Ping_Pong_engine(Game_engine):
     def test_2(self):
         self.clear()
         self.add(self.walls,
-                 Rect_Wall( [150, 150], "images/walls/wall_test.png", angular_velocity = 0, angle = 71),
+                 Rect_Wall( [150, 150], "images/walls/wall_test.png", angular_velocity = 0.5, angle = 30),
 
                  Rect_Wall( [500, 5], "images/walls/wall_w.png", angle = 0),
                  Rect_Wall( [500, 300], "images/walls/wall_w.png", angle = 0),
@@ -95,24 +136,24 @@ class Ping_Pong_engine(Game_engine):
                  Ball( [400, 215], b, angular_velocity = 0, vx = speed, vy = 3),
 
                  Ball( [400, 210], b, angular_velocity = 0, vx = speed, vy = -4),
-                 Ball( [400, 210], b, angular_velocity = 0, vx = speed, vy = 8),
                  Ball( [400, 234], b, angular_velocity = 0, vx = speed, vy = 3),
-                 Ball( [400, 221], b, angular_velocity = 0, vx = speed, vy = 2),)
+                 Ball( [400, 221], b, angular_velocity = 0, vx = speed, vy = 2),
+                 Ball( [400, 210], b, angular_velocity = 0, vx = speed, vy = 6))
 
     def test_3(self):
         self.clear()
         self.add(self.walls,
-                 Rect_Wall( [200, 230], "images/walls/wall_test.png", angular_velocity = 0, angle = 180),
+                 Rect_Wall( [200, 230], "images/walls/wall_test.png", angular_velocity = 0, angle = 0))
 
 
-                 Rect_Wall( [500, 5], "images/walls/wall_w.png", angle = 0),
-                 Rect_Wall( [500, 645], "images/walls/wall_w.png", angle = 0),
-                 Rect_Wall( [5, 325], "images/walls/wall_w.png", angle = 90),
-                 Rect_Wall( [995, 325], "images/walls/wall_w.png", angle = 90))
+                 # Rect_Wall( [500, 5], "images/walls/wall_w.png", angle = 0),
+                 # Rect_Wall( [500, 645], "images/walls/wall_w.png", angle = 0),
+                 # Rect_Wall( [5, 325], "images/walls/wall_w.png", angle = 90),
+                 # Rect_Wall( [995, 325], "images/walls/wall_w.png", angle = 90))
                  # Rect_Wall( [200, 230], "images/walls/wall_test.png", angular_velocity = 0, angle = 45))
                  # Rect_Wall( [600, 230], "images/walls/wall_test.png", angle = 0))
         self.add(self.balls,
-                 Ball( [400, 230], "images/ball_small.png", angular_velocity = 0, vx = -3) )
+                 Ball( [500, 230], "images/ball_small.png", angular_velocity = 0, vx = -50, vy = 0) )
 
 
 
