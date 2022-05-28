@@ -1,0 +1,96 @@
+def test_1(self):
+      self.clear()
+      self.add(self.walls,
+               Rect_Wall( [200, 230], "images/walls/wall_test.png", angular_velocity = 0.1, angle = 45, vx = -1),
+               Rect_Wall( [450, 500], "images/walls/Sergi.jpg", angular_velocity = 2, angle = 45),
+
+
+               Rect_Wall( [500, 5], "images/walls/wall_w.png", angle = 0),
+               Rect_Wall( [520, 645], "images/walls/wall_w.png", angle = 0),
+               Rect_Wall( [5, 325], "images/walls/wall_w.png", angle = 90),
+               Rect_Wall( [995, 325], "images/walls/wall_w.png", angle = 90))
+               # Rect_Wall( [200, 230], "images/walls/wall_test.png", angular_velocity = 0, angle = 45))
+               # Rect_Wall( [600, 230], "images/walls/wall_test.png", angle = 0))
+      self.add(self.balls,
+               Ball( [500, 200], "images/walls/ball_test.png", angular_velocity = 0, vx = -4, vy = 0),
+               Ball( [500, 200], "images/ball_small.png", angular_velocity = 0, vx = -4, vy = 8) )
+
+  def test_2(self):
+      self.clear()
+      self.add(self.walls,
+               Rect_Wall( [150, 150], "images/walls/wall_test.png", angular_velocity = 0.5, angle = 30),
+
+               Rect_Wall( [500, 5], "images/walls/wall_w.png", angle = 0),
+               Rect_Wall( [500, 300], "images/walls/wall_w.png", angle = 0),
+               Rect_Wall( [5, 325], "images/walls/wall_w.png", angle = 90),
+               Rect_Wall( [420, 325], "images/walls/wall_w.png", angle = 90))
+      speed = -4
+      b = "images/ball.png"
+      # b = "images/ball_small.png"
+
+      self.add(self.balls,
+               Ball( [400, 210], b, angular_velocity = 0, vx = speed, vy = 5),
+               Ball( [400, 215], b, angular_velocity = 0, vx = speed, vy = 5),
+               Ball( [400, 220], b, angular_velocity = 0, vx = speed, vy = 5),
+               Ball( [400, 225], b, angular_velocity = 0, vx = speed, vy = -2),
+               # Ball( [400, 230], b, angular_velocity = 0, vx = speed, vy = 8),
+               Ball( [400, 235], b, angular_velocity = 0, vx = speed, vy = 4),
+               Ball( [400, 240], b, angular_velocity = 0, vx = speed, vy = 1),
+               Ball( [400, 245], b, angular_velocity = 0, vx = speed, vy = 8),
+               Ball( [400, 250], b, angular_velocity = 0, vx = speed, vy = 0),
+
+               # Ball( [400, 217], b, angular_velocity = 0, vx = speed, vy = 7),
+               Ball( [400, 200], b, angular_velocity = 0, vx = speed, vy = -2),
+               Ball( [400, 222], b, angular_velocity = 0, vx = speed, vy = -5),
+               Ball( [400, 215], b, angular_velocity = 0, vx = speed, vy = 3),
+
+               Ball( [400, 210], b, angular_velocity = 0, vx = speed, vy = -4),
+               Ball( [400, 234], b, angular_velocity = 0, vx = speed, vy = 3),
+               Ball( [400, 221], b, angular_velocity = 0, vx = speed, vy = 2),
+               Ball( [400, 210], b, angular_velocity = 0, vx = speed, vy = 6))
+
+  def test_3(self):
+      self.clear()
+      self.add(self.walls,
+               Rect_Wall( [200, 230], "images/walls/wall_test.png", angular_velocity = 0, angle = 50))
+
+
+               # Rect_Wall( [500, 5], "images/walls/wall_w.png", angle = 0),
+               # Rect_Wall( [500, 645], "images/walls/wall_w.png", angle = 0),
+               # Rect_Wall( [5, 325], "images/walls/wall_w.png", angle = 90),
+               # Rect_Wall( [995, 325], "images/walls/wall_w.png", angle = 90))
+               # Rect_Wall( [200, 230], "images/walls/wall_test.png", angular_velocity = 0, angle = 45))
+               # Rect_Wall( [600, 230], "images/walls/wall_test.png", angle = 0))
+      self.add(self.balls,
+               Ball( [500, 230], "images/ball_small.png", angular_velocity = 0, vx = -2, vy = 0) )
+
+  def test_4(self):
+      self.clear()
+      self.add(self.walls,
+               Rect_Wall( [150, 150], "images/walls/wall_test.png", angular_velocity = 0.5, angle = 30),
+
+               Rect_Wall( [500, 5], "images/walls/wall_w.png", angle = 0),
+               Rect_Wall( [500, 300], "images/walls/wall_w.png", angle = 0),
+               Rect_Wall( [5, 325], "images/walls/wall_w.png", angle = 90),
+               Rect_Wall( [420, 325], "images/walls/wall_w.png", angle = 90))
+      speed = -4
+      b = "images/ball.png"
+      # b = "images/ball_small.png"
+      num_balls = int(input())
+      for i in range(num_balls):
+          self.add(self.balls, Ball( [400, randint(200, 235)], b, vx = speed, vy = randint(0,6)))
+
+  def test_5(self):
+      self.clear()
+      self.add(self.walls,
+               Rect_Wall( [240, 300], "images/walls/big_wall.png", angular_velocity = 0, angle = 50))
+
+
+               # Rect_Wall( [500, 5], "images/walls/wall_w.png", angle = 0),
+               # Rect_Wall( [500, 645], "images/walls/wall_w.png", angle = 0),
+               # Rect_Wall( [5, 325], "images/walls/wall_w.png", angle = 90),
+               # Rect_Wall( [995, 325], "images/walls/wall_w.png", angle = 90))
+               # Rect_Wall( [200, 230], "images/walls/wall_test.png", angular_velocity = 0, angle = 45))
+               # Rect_Wall( [600, 230], "images/walls/wall_test.png", angle = 0))
+      self.add(self.balls,
+               Ball( [450, 300], "images/ball_small.png", angular_velocity = 0, vx = -2, vy = 1) )
